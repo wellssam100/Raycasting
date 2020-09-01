@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using UnityEngine;
 
@@ -22,9 +23,13 @@ public class RayTracing : MonoBehaviour
 
     //Public Options
     public Vector2 SphereRadius = new Vector2(3.0f, 8.0f);
-    public uint SpheresMax = 100;
+    public int SpheresMax = 100;
     public float SpherePlacementRadius = 50.0f;
     private ComputeBuffer _sphereBuffer;
+
+    private int SpheresTotal;
+    private float step;
+
 
     public struct Sphere
     {
@@ -91,16 +96,22 @@ public class RayTracing : MonoBehaviour
         //Assign to compute buffer
         _sphereBuffer = new ComputeBuffer(spheres.Count, 40);
         _sphereBuffer.SetData(spheres);
+        SpheresTotal = spheres.Count;
+
+       
+        
     }
 
     private void Awake() 
     {
         _camera = GetComponent<Camera>();
+
     }
 
     private void Update() 
     {
         //To restart the anti-aliasing sampling
+        //I might be able to take these two out, since the spheres will always be moving
         if (transform.hasChanged) 
         {
             _currentSample = 0;
@@ -111,6 +122,42 @@ public class RayTracing : MonoBehaviour
             _currentSample = 0;
             DirectionalLight.transform.hasChanged = false;
         }
+       // SphereBob();
+
+
+
+    }
+
+    private void SphereBob() 
+    {
+       
+        List<Sphere> spheres = new List<Sphere>();
+
+        Sphere[] tempArray = new Sphere[SpheresTotal];
+        _sphereBuffer.GetData(tempArray, 0, 0, SpheresTotal);
+        for (int i = 0; i < tempArray.Length; i++) 
+        {
+            spheres.Add(tempArray[i]);
+            
+        }
+
+
+        List<Sphere> temp = new List<Sphere>();
+
+        foreach(Sphere sphere in spheres)
+        {
+            Sphere tempSphere = sphere;
+            float up = (float)(Math.Sin(step));
+            step = step + (float)Math.PI / 72;
+            tempSphere.position.y = sphere.position.y + up;
+            temp.Add(tempSphere);
+        }
+        _sphereBuffer.SetData(temp);
+        Sphere[] check = new Sphere[1];
+        _sphereBuffer.GetData(check, 0, 0, 1); 
+        _currentSample = 0;
+
+        RayTracingShader.SetBuffer(0, "_Spheres", _sphereBuffer);
 
     }
 
