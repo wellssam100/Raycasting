@@ -145,7 +145,6 @@ float3 Shade(inout Ray ray, RayHit hit)
 {
     //Sample the skybox and write the color 
 
-// 
     if (hit.distance < 1.#INF) 
     {
         //return the normal
@@ -167,7 +166,8 @@ float3 Shade(inout Ray ray, RayHit hit)
         RayHit shadowHit = Trace(shadowRay);
         if (shadowHit.distance != 1.#INF)
         {
-            return float3(0.0f, 0.0f, 0.0f);
+            //TURN OFF/ON SHADOWS
+          //  return float3(0.0f, 0.0f, 0.0f);
         }
 
         //this is the diffuse return
@@ -186,6 +186,8 @@ float3 Shade(inout Ray ray, RayHit hit)
         //return background;
     }
 }
+
+//Convert polar to cartesian
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
