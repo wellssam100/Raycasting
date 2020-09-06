@@ -160,12 +160,22 @@ public class RayTracing : MonoBehaviour
         p.a = a;
         p.b = b;
 
-        if (!fractionMap.Contains(p)) 
+        bool isUnique = true;
+        foreach (Pair pair in fractionMap) 
+        {
+            if ((float)pair.a / (float)pair.b == (float)p.a / (float)p.b)
+                isUnique = false;
+
+        }
+        if (isUnique) 
         {
             //Set values
             Sphere sphere = new Sphere();
-            sphere.position = new Vector3 ((float)a / (float)b, 1.0f / (2.0f * (float)(Math.Pow(b, 2))), 0);
-            sphere.radius = 1.0f / (2.0f * (float)(Math.Pow(b, 2)));
+            int gcd = GCD(a, b);
+            p.a = a / gcd;
+            p.b = b / gcd;
+            sphere.position = new Vector3 ((float)p.a / (float)p.b, 1.0f / (2.0f * (float)(Math.Pow(p.b, 2))), 0);
+            sphere.radius = 1.0f / (2.0f * (float)(Math.Pow(p.b, 2)));
             //Add Gradient Color
             Color colorBase = new Color(sphere.position.x, sphere.position.x, sphere.position.x);
             Color color = colorBase * myColor;
@@ -177,8 +187,8 @@ public class RayTracing : MonoBehaviour
         step--;
         fractionMap.Add(p);
        // UnityEngine.Debug.Log("x: " + p.a + "/" + p.b + "\n");
-        drawFordSpheres(a, b + 1, step, spheres, fractionMap);
-        drawFordSpheres(a + 1, b + 1, step, spheres, fractionMap);
+        drawFordSpheres(p.a, p.b + 1, step, spheres, fractionMap);
+        drawFordSpheres(p.a + 1, p.b + 1, step, spheres, fractionMap);
     
     }
     //returns true if the elements are the same, false if they are different
@@ -250,15 +260,17 @@ public class RayTracing : MonoBehaviour
 
     }
 
-    //to each rational number a/b (in lowest terms), assign a circle above but tangent to the x-axis at a/b with radius1/2b2
-    /*private void fordLine(List<Sphere> spheres) 
+    private static int GCD(int a, int b) 
     {
-        for(int i=0;i<SpheresMax;i++)
+        int remainder;
+        while (b != 0) 
         {
-            spheres[i].radius = ((float)(1)) / (2 * Math.Pow(SpheresMax, 2));
-            spheres[i].position = (i / SpheresMax,sphere.radius,0);
+            remainder = a % b;
+            a = b;
+            b = remainder;
         }
-    }*/
+        return a;
+    }
    
 
     //SETUP DISPLAY
