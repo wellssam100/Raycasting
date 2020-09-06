@@ -28,7 +28,7 @@ public class RayTracing : MonoBehaviour
     public float SpherePlacementRadius = 50.0f;
     private ComputeBuffer _fordSphereBuffer, _randomSphereBuffer;
 
-    public Color myColor;
+    public Color myColor1, myColor2;
 
     private int SpheresTotal;
     //Sphere Bob variable
@@ -133,9 +133,15 @@ public class RayTracing : MonoBehaviour
         Color colorBase_1 = new Color(s1.position.x, s1.position.x, s1.position.x);
         Color colorBase_2 = new Color(s2.position.x, s2.position.x, s2.position.x);
 
-        Color color_1 = colorBase_1 * myColor;
-        Color color_2 = colorBase_2 * myColor;
+        Color colorBase2_1 = new Color(s1.position.x - 1, s1.position.x - 1, s1.position.x - 1);
+        Color colorBase2_2 = new Color(s2.position.x - 1, s2.position.x - 1, s2.position.x - 1);
 
+
+        Color color_1 = Color.Lerp(myColor1, myColor2, s1.position.x);
+
+        Color color_2 = Color.Lerp(myColor1, myColor2, s2.position.x);
+
+      
 
         bool metal = UnityEngine.Random.value < 0.5f;
         s1.albedo = Vector3.zero;
@@ -177,8 +183,11 @@ public class RayTracing : MonoBehaviour
             sphere.position = new Vector3 ((float)p.a / (float)p.b, 1.0f / (2.0f * (float)(Math.Pow(p.b, 2))), 0);
             sphere.radius = 1.0f / (2.0f * (float)(Math.Pow(p.b, 2)));
             //Add Gradient Color
-            Color colorBase = new Color(sphere.position.x, sphere.position.x, sphere.position.x);
-            Color color = colorBase * myColor;
+            Color colorBase1 = new Color(sphere.position.x, sphere.position.x, sphere.position.x);
+            Color colorBase2 = new Color(sphere.position.x - 1, sphere.position.x - 1, sphere.position.x - 1);
+
+            // Color color = (colorBase1 * myColor1)*(colorBase2*myColor2);
+            Color color = Color.Lerp(myColor1, myColor2, sphere.position.x);
             sphere.albedo = new Vector3(color.r, color.g, color.b);
             sphere.specular = Vector3.one * 0.04f;
             //Add Sphere to Lst
@@ -332,7 +341,9 @@ public class RayTracing : MonoBehaviour
         RayTracingShader.SetVector("_DirectionalLight", new Vector4(l.x, l.y, l.z, DirectionalLight.intensity));
         //TODO: figure out if I can set then draw from two different buffers
         RayTracingShader.SetBuffer(0, "_Spheres", _fordSphereBuffer);
+        //Something like
+        // RayTracingShader.SetBuffer(0, "_Spheres", _randomSpheresBuffer);
     }
 
-    
+
 }
