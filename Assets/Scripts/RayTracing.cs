@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+//using System.IO.Ports;
 using System.Security.Cryptography;
 using UnityEngine;
 
@@ -36,6 +37,17 @@ public class RayTracing : MonoBehaviour
     //Ford's Sphere tree depth
     public int depth;
 
+    //TODO, make better constructors
+    public struct iPair 
+    {
+        public ComplexNum a;
+        public ComplexNum b;
+    }
+    public struct ComplexNum 
+    {
+        public float real;
+        public float imag;
+    }
     public struct Pair 
     {
         public int a;
@@ -70,23 +82,29 @@ public class RayTracing : MonoBehaviour
 
     private void SetUpScene()
     {
-        List<Sphere> fordSpheres = new List<Sphere>();
+        List<Sphere> fordCircles = new List<Sphere>();
         List<Sphere> randomSpheres = new List<Sphere>();
+        List<Sphere> fordSpheres = new List<Sphere>();
         List<Pair> fractionMap =  new List<Pair>();
+        List<iPair> complexFraction = new List<iPair>();
         
 
         drawRandomSpheres(randomSpheres);
-        setupFordSpheres(fordSpheres, fractionMap);
-               
+       // setupFordCircles(fordCircles, fractionMap);
+
+        setupFordSpheres(fordSpheres, complexFraction);
+
         //Assign Ford Spheres to compute buffer
+        // _fordSphereBuffer = new ComputeBuffer(fordCircles.Count, 40);
+        // _fordSphereBuffer.SetData(fordCircles);
+        //SpheresTotal = fordCircles.Count;
         _fordSphereBuffer = new ComputeBuffer(fordSpheres.Count, 40);
         _fordSphereBuffer.SetData(fordSpheres);
         SpheresTotal = fordSpheres.Count;
 
 
 
-       
-        
+
     }
 
     private void drawRandomSpheres(List<Sphere> spheres) 
@@ -122,7 +140,62 @@ public class RayTracing : MonoBehaviour
 
         }
     }
-    private void setupFordSpheres(List<Sphere> spheres, List<Pair> fractionMap) 
+   
+    private void setupFordSpheres(List<Sphere> spheres, List<iPair> complexFractions)
+    {
+        //the Pairs here a= real portion, b= imaginary protion
+        //p.a=1 p.b=-5 -> 1-5i
+        ComplexNum beta = new ComplexNum();
+        beta.real = 1;
+        beta.imag = 1;
+        //|alpha|^2 <= |beta|^2
+        ComplexNum alpha = new ComplexNum();
+        alpha.real = -1;
+        alpha.imag = -1;
+
+        iPair testI = new iPair();
+        testI.a = alpha;
+        testI.b = beta;
+        if(findMagnitude(testI.a) / findMagnitude(testI.b) <= 1) 
+        {
+            drawFordSpheres(testI.a, testI.b, 1, spheres, complexFractions);
+        }
+
+        for (int i=-1; i < 2; i++) 
+        {
+            for (int j= -1; j < 2; j++) 
+            {
+
+                if (Math.Pow(findMagnitude(alpha) / findMagnitude(beta),2) <= 1) {
+                    drawFordSpheres(alpha, beta, 1, spheres, complexFractions);
+                }
+                UnityEngine.Debug.Log("alpha:" + alpha.real + "|" + alpha.imag);
+                alpha.imag++;
+            }
+            alpha.real++;
+
+        }
+    }
+    
+    private void drawFordSpheres(ComplexNum alpha, ComplexNum beta, int step, List<Sphere> spheres, List<iPair> complexFractions) 
+    {
+        Sphere sphere = new Sphere();
+        //coordinates might not actually be a complex number, not sure
+        ComplexNum coordinates = splitComplexNumber(alpha, beta);
+       // UnityEngine.Debug.Log("Magnitude:"+findMagnitude(alpha));
+        sphere.radius =(float) 1 / ((float)2 * findMagnitude(beta));
+        sphere.position=new Vector3(coordinates.real, sphere.radius,coordinates.imag);
+        
+        
+        sphere.albedo = Vector3.zero;
+        sphere.specular = new Vector3(1,.5f,1);
+
+        spheres.Add(sphere);
+       // UnityEngine.Debug.Log(sphere.radius + "|" + sphere.position);
+
+    }
+  
+    private void setupFordCircles(List<Sphere> spheres, List<Pair> fractionMap) 
     {
         Sphere s1, s2 = new Sphere();
         s1.position = new Vector3(0, 0.5f, 0);
@@ -153,9 +226,10 @@ public class RayTracing : MonoBehaviour
         spheres.Add(s1);
         spheres.Add(s2);
 
-        drawFordSpheres(1, 2, depth, spheres, fractionMap);
+        drawFordCircles(1, 2, depth, spheres, fractionMap);
     }
-    private void drawFordSpheres(int a, int b, int step , List<Sphere> spheres, List<Pair> fractionMap) 
+    
+    private void drawFordCircles(int a, int b, int step , List<Sphere> spheres, List<Pair> fractionMap) 
     {
         if (step == 0) 
         {
@@ -196,10 +270,31 @@ public class RayTracing : MonoBehaviour
         step--;
         fractionMap.Add(p);
        // UnityEngine.Debug.Log("x: " + p.a + "/" + p.b + "\n");
-        drawFordSpheres(p.a, p.b + 1, step, spheres, fractionMap);
-        drawFordSpheres(p.a + 1, p.b + 1, step, spheres, fractionMap);
+        drawFordCircles(p.a, p.b + 1, step, spheres, fractionMap);
+        drawFordCircles(p.a + 1, p.b + 1, step, spheres, fractionMap);
     
     }
+
+    private float findMagnitude(ComplexNum pair) 
+    {
+        return (float)Math.Pow(pair.real, 2) + (float)Math.Pow(pair.imag, 2);
+    }
+
+    private ComplexNum splitComplexNumber(ComplexNum alpha, ComplexNum beta) 
+    {
+        ComplexNum pair = new ComplexNum();
+        pair.real = (float)(alpha.real * beta.real + alpha.imag * beta.imag) / ((float)Math.Pow(beta.real, 2) + (float)Math.Pow(beta.imag, 2));
+        pair.imag = (float)(alpha.imag * beta.real - alpha.real * beta.imag) / ((float)Math.Pow(beta.real, 2) + (float)Math.Pow(beta.imag, 2));
+
+        return pair;
+    }
+
+    //Generate a list of complex numbers that are coprime
+    private List<iPair> fillList()
+    {
+        return null;
+    }
+
     //returns true if the elements are the same, false if they are different
     private bool comPair(Pair p1, Pair p2) 
     {
@@ -208,6 +303,39 @@ public class RayTracing : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private static int GCD(int a, int b)
+    {
+        int remainder;
+        while (b != 0)
+        {
+            remainder = a % b;
+            a = b;
+            b = remainder;
+        }
+        return a;
+    }
+
+    private static bool GCD(int[] numbers) {
+        bool isCoPrime = false;
+        
+        for (int i = 0; i < numbers.Length; i++) {
+            for (int j = 0; j < numbers.Length; j++) {
+                if (numbers[j] == 1) 
+                {
+                    isCoPrime = true;
+                    break;
+                }
+                if (1 == GCD(numbers[i], numbers[j]))
+                {
+                    isCoPrime = true;
+                    break;
+                }
+            }
+        }
+
+        return isCoPrime;
     }
 
     private void Awake() 
@@ -236,49 +364,37 @@ public class RayTracing : MonoBehaviour
 
     }
 
-    private void SphereBob() 
+    private void SphereBob()
     {
-       
+
         List<Sphere> spheres = new List<Sphere>();
 
         Sphere[] tempArray = new Sphere[SpheresTotal];
         _randomSphereBuffer.GetData(tempArray, 0, 0, SpheresTotal);
-        for (int i = 0; i < tempArray.Length; i++) 
+        for (int i = 0; i < tempArray.Length; i++)
         {
             spheres.Add(tempArray[i]);
-            
+
         }
 
 
         List<Sphere> temp = new List<Sphere>();
 
-        foreach(Sphere sphere in spheres)
+        foreach (Sphere sphere in spheres)
         {
             Sphere tempSphere = sphere;
-            float up = (float)(Math.Sin(step))/ sphere.radius;
-            step = (step + (float)Math.PI / 2048)%((float)(Math.PI)*2);
+            float up = (float)(Math.Sin(step)) / sphere.radius;
+            step = (step + (float)Math.PI / 2048) % ((float)(Math.PI) * 2);
             tempSphere.position.y = sphere.position.y + up;
             temp.Add(tempSphere);
         }
         _randomSphereBuffer.SetData(temp);
         Sphere[] check = new Sphere[1];
-        _randomSphereBuffer.GetData(check, 0, 0, 1); 
+        _randomSphereBuffer.GetData(check, 0, 0, 1);
         _currentSample = 0;
 
         RayTracingShader.SetBuffer(0, "_Spheres", _randomSphereBuffer);
 
-    }
-
-    private static int GCD(int a, int b) 
-    {
-        int remainder;
-        while (b != 0) 
-        {
-            remainder = a % b;
-            a = b;
-            b = remainder;
-        }
-        return a;
     }
    
 
