@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using UnityEngine;
 
+
 public class RayTracing : MonoBehaviour
 {
     //SETUP DISPLAY
@@ -43,15 +44,10 @@ public class RayTracing : MonoBehaviour
         public ComplexNum a;
         public ComplexNum b;
     }
-    public struct ComplexNum 
-    {
-        public float real;
-        public float imag;
-    }
     public struct Pair 
     {
-        public int a;
-        public int b;
+        public float a;
+        public float b;
     }
     public struct Sphere
     {
@@ -86,18 +82,18 @@ public class RayTracing : MonoBehaviour
         List<Sphere> randomSpheres = new List<Sphere>();
         List<Sphere> fordSpheres = new List<Sphere>();
         List<Pair> fractionMap =  new List<Pair>();
-        List<iPair> complexFraction = new List<iPair>();
         
 
         drawRandomSpheres(randomSpheres);
-       // setupFordCircles(fordCircles, fractionMap);
+        //setupFordCircles(fordSpheres, fractionMap);
 
-        setupFordSpheres(fordSpheres, complexFraction);
+        setupFordSpheres(fordSpheres);
 
         //Assign Ford Spheres to compute buffer
         // _fordSphereBuffer = new ComputeBuffer(fordCircles.Count, 40);
         // _fordSphereBuffer.SetData(fordCircles);
         //SpheresTotal = fordCircles.Count;
+
         _fordSphereBuffer = new ComputeBuffer(fordSpheres.Count, 40);
         _fordSphereBuffer.SetData(fordSpheres);
         SpheresTotal = fordSpheres.Count;
@@ -141,57 +137,98 @@ public class RayTracing : MonoBehaviour
         }
     }
    
-    private void setupFordSpheres(List<Sphere> spheres, List<iPair> complexFractions)
+    private void setupFordSpheres(List<Sphere> spheres )
     {
-        //the Pairs here a= real portion, b= imaginary protion
-        //p.a=1 p.b=-5 -> 1-5i
-        ComplexNum beta = new ComplexNum();
-        beta.real = 1;
-        beta.imag = 1;
+
+        /*Sphere test = new Sphere();
+        test.radius = 1;
+        test.position = new Vector3(1f, 2f, 1f);
+        test.albedo = new Vector3(1f, 1f, 1f);
+        test.specular = new Vector3(0.5f, 0.5f, 0.5f);
+        spheres.Add(test);*/
+        ComplexNum unit_1 = new ComplexNum();
+        unit_1.r = 1;
+        unit_1.i = 0;
+        ComplexNum unit_2 = new ComplexNum();
+        unit_2.r = -1;
+        unit_2.i = 0; 
+        ComplexNum unit_3 = new ComplexNum();
+        unit_3.r = 0;
+        unit_3.i = 1; 
+        ComplexNum unit_4 = new ComplexNum();
+        unit_4.r = 0;
+        unit_4.i = -1;
+        ComplexNum b = new ComplexNum();
+        b.r = 1;
+        b.i = 1;
         //|alpha|^2 <= |beta|^2
-        ComplexNum alpha = new ComplexNum();
-        alpha.real = -1;
-        alpha.imag = -1;
+        ComplexNum a = new ComplexNum();
+        a.r = -1;
+        a.i = -1;
 
-        iPair testI = new iPair();
-        testI.a = alpha;
-        testI.b = beta;
-        if(findMagnitude(testI.a) / findMagnitude(testI.b) <= 1) 
+        for (int i = 0; i < depth; i++) 
         {
-            drawFordSpheres(testI.a, testI.b, 1, spheres, complexFractions);
-        }
-
-        for (int i=-1; i < 2; i++) 
-        {
-            for (int j= -1; j < 2; j++) 
+            for (int br = 0; br <2/*TODO:ADD REAL BETA ITERATIONS*/; br++) 
             {
+                for (int bi = 0; bi < 2; bi++) 
+                {
+                    b.r = (float)br;
+                    b.i = (float)bi;
+                    if (b.r == 0 && b.i == 0) 
+                    {
+                        continue;
+                    }
+                    //alpha's real part
+                    for (int ar = (int)-Math.Floor(b.mag()); ar < (int)Math.Ceiling(b.mag()); ar++)
+                    {
+                        // alpha's imaginary part
+                        for (int ai = (int)-Math.Floor(b.mag()); ai < (int)Math.Ceiling(b.mag()); ai++)
+                        {
+                            UnityEngine.Debug.Log(ai + " | " + ar);
+                            if (a.r == 0 && a.i == 0)
+                            {
+                                continue;
+                            }
+                            a.r = (float)ar;
+                            a.i = (float)ai;
+                            //UnityEngine.Debug.Log(a+" |"+b+" |"+a.mag() / b.mag());
+                            if (a.mag() / b.mag() <= 1 && (a.mag() / b.mag()) != 0)
+                            {
+                                drawFordSpheres(a, b, 1, spheres);
+                            }
+                        }
 
-                if (Math.Pow(findMagnitude(alpha) / findMagnitude(beta),2) <= 1) {
-                    drawFordSpheres(alpha, beta, 1, spheres, complexFractions);
+                    }
                 }
-                UnityEngine.Debug.Log("alpha:" + alpha.real + "|" + alpha.imag);
-                alpha.imag++;
             }
-            alpha.real++;
-
         }
+
+       
+
     }
     
-    private void drawFordSpheres(ComplexNum alpha, ComplexNum beta, int step, List<Sphere> spheres, List<iPair> complexFractions) 
+    private void drawFordSpheres(ComplexNum a, ComplexNum b, int step, List<Sphere> spheres ) 
     {
         Sphere sphere = new Sphere();
         //coordinates might not actually be a complex number, not sure
-        ComplexNum coordinates = splitComplexNumber(alpha, beta);
-       // UnityEngine.Debug.Log("Magnitude:"+findMagnitude(alpha));
-        sphere.radius =(float) 1 / ((float)2 * findMagnitude(beta));
-        sphere.position=new Vector3(coordinates.real, sphere.radius,coordinates.imag);
-        
-        
-        sphere.albedo = Vector3.zero;
-        sphere.specular = new Vector3(1,.5f,1);
+        ComplexNum coordinates = a / b;
+        float[] check = { (float)Math.Pow(a.r, 2) + (float)Math.Pow(a.i, 2), (float)Math.Pow(b.r, 2) + (float)Math.Pow(b.i, 2), a.r * b.r + a.i * b.i, b.i * a.r - a.i * b.r };
+       // UnityEngine.Debug.Log(GCD(check) == 1);
+        if (GCD(check) == 1)
+        {
+            sphere.radius = (float)1 / ((float)2 * b.mag());
+            sphere.position = new Vector3(coordinates.r, sphere.radius, coordinates.i);
 
-        spheres.Add(sphere);
-       // UnityEngine.Debug.Log(sphere.radius + "|" + sphere.position);
+
+            sphere.albedo = Vector3.zero;
+            sphere.specular = new Vector3(1, .5f, 1);
+
+            spheres.Add(sphere);
+        }
+        else {
+            UnityEngine.Debug.Log("Could not draw sphere " + coordinates);
+        }
+        
 
     }
   
@@ -229,7 +266,7 @@ public class RayTracing : MonoBehaviour
         drawFordCircles(1, 2, depth, spheres, fractionMap);
     }
     
-    private void drawFordCircles(int a, int b, int step , List<Sphere> spheres, List<Pair> fractionMap) 
+    private void drawFordCircles(float a, float b, int step , List<Sphere> spheres, List<Pair> fractionMap) 
     {
         if (step == 0) 
         {
@@ -251,7 +288,7 @@ public class RayTracing : MonoBehaviour
         {
             //Set values
             Sphere sphere = new Sphere();
-            int gcd = GCD(a, b);
+            float gcd = GCD(a, b);
             p.a = a / gcd;
             p.b = b / gcd;
             sphere.position = new Vector3 ((float)p.a / (float)p.b, 1.0f / (2.0f * (float)(Math.Pow(p.b, 2))), 0);
@@ -275,26 +312,6 @@ public class RayTracing : MonoBehaviour
     
     }
 
-    private float findMagnitude(ComplexNum pair) 
-    {
-        return (float)Math.Pow(pair.real, 2) + (float)Math.Pow(pair.imag, 2);
-    }
-
-    private ComplexNum splitComplexNumber(ComplexNum alpha, ComplexNum beta) 
-    {
-        ComplexNum pair = new ComplexNum();
-        pair.real = (float)(alpha.real * beta.real + alpha.imag * beta.imag) / ((float)Math.Pow(beta.real, 2) + (float)Math.Pow(beta.imag, 2));
-        pair.imag = (float)(alpha.imag * beta.real - alpha.real * beta.imag) / ((float)Math.Pow(beta.real, 2) + (float)Math.Pow(beta.imag, 2));
-
-        return pair;
-    }
-
-    //Generate a list of complex numbers that are coprime
-    private List<iPair> fillList()
-    {
-        return null;
-    }
-
     //returns true if the elements are the same, false if they are different
     private bool comPair(Pair p1, Pair p2) 
     {
@@ -304,10 +321,10 @@ public class RayTracing : MonoBehaviour
         }
         return false;
     }
-
-    private static int GCD(int a, int b)
+    
+    private static float GCD(float a, float b)
     {
-        int remainder;
+        float remainder;
         while (b != 0)
         {
             remainder = a % b;
@@ -317,25 +334,37 @@ public class RayTracing : MonoBehaviour
         return a;
     }
 
-    private static bool GCD(int[] numbers) {
-        bool isCoPrime = false;
-        
-        for (int i = 0; i < numbers.Length; i++) {
-            for (int j = 0; j < numbers.Length; j++) {
-                if (numbers[j] == 1) 
-                {
-                    isCoPrime = true;
-                    break;
-                }
-                if (1 == GCD(numbers[i], numbers[j]))
-                {
-                    isCoPrime = true;
-                    break;
-                }
+    private static float GCD(float[] arr) {
+       
+        float result = arr[0];
+        for (int i = 1; i < arr.Length; i++)
+        {
+            result = GCD(arr[i], result);
+
+            if (result == 1)
+            {
+                return 1;
             }
         }
+        return result;
+        /*bool isCoPrime = false;
 
-        return isCoPrime;
+       for (int i = 0; i < numbers.Length; i++) {
+           for (int j = 0; j < numbers.Length; j++) {
+               if (numbers[j] == 1) 
+               {
+                   isCoPrime = true;
+                   break;
+               }
+               if (1 == GCD(numbers[i], numbers[j]))
+               {
+                   isCoPrime = true;
+                   break;
+               }
+           }
+       }
+
+       return isCoPrime;*/
     }
 
     private void Awake() 
