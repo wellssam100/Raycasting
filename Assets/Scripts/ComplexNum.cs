@@ -18,24 +18,45 @@ public class ComplexNum
     }
     public float mag()
     {
-        return (float)Math.Abs(Math.Pow(this.r, 2) + 0.Math.Pow(this.i, 2));
+        //sqrt of this
+        return (float)Math.Sqrt((this.r*this.r) + (this.i*this.i));
     }
    
     private ComplexNum GCDComplex(ComplexNum a, ComplexNum b)
     {
-        ComplexNum c = new ComplexNum();
-        c.r = a.r + b.r;
-        c.i = a.i + b.i;
-        float [] check = { a.mag(), b.mag(), c.mag() };
+        //assume a.mag() > b.mag()
+        //a/b = x+yi
+        //round x and y to closest ints that gives you q
+        //r = a-b*q
+        //repeat until r=0
+        /* ComplexNum r = new ComplexNum(1, 1);
+         if (a.mag() > b.mag())
+         {
+
+             ComplexNum c = a / b;
+             ComplexNum q = new ComplexNum();
+             q.r = Math.Round(c.r);
+             q.i = Math.Round(c.i);
+             r = a - (b * q);
+             if (r.r == 0 && r.i == 0)
+             {
+                 return q;
+             }
+             else
+             {
+                 return GCDComplex(r, b);    
+             }
+         }
+         else if()
+         {
+
+         }*/
         return null;
-        //float gcd = GCD(check);
-        //TODO we have the norm GCD, we need the actual complex number
-        //I think I need to change this to the a/b -> b=r until r =0
 
     }
 
     public static ComplexNum operator /(ComplexNum a, ComplexNum b) {
-        float real = ((a.r * b.r) - (a.i * b.i)) / ((float)Math.Pow(b.r, 2) + (float)Math.Pow(b.i, 2));
+        float real = ((a.r * b.r) + (a.i * b.i)) / ((float)Math.Pow(b.r, 2) + (float)Math.Pow(b.i, 2));
         float imag = ((a.i * b.r) - (a.r * b.i)) / ((float)Math.Pow(b.r, 2) + (float)Math.Pow(b.i, 2));
         return new ComplexNum(real, imag);
     }
@@ -59,7 +80,6 @@ public class ComplexNum
     public override string ToString() {
 
         string s = "CN:";
-        UnityEngine.Debug.Log(this.r);
         if (this.r > 0)
         {
             s = s + " " + this.r;

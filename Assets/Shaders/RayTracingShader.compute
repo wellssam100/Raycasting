@@ -128,7 +128,8 @@ void IntersectSphere(Ray ray, inout RayHit bestHit, Sphere sphere)
 RayHit Trace(Ray ray) 
 {
     RayHit bestHit = CreateRayHit();
-    IntersectGroundPlane(ray, bestHit);
+    //TODO add plane toggle
+   // IntersectGroundPlane(ray, bestHit);
     
 
     //Trace Spheres
