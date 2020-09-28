@@ -31,12 +31,12 @@ public class RayTracing : MonoBehaviour
     public int SpheresMax = 100;
     public float SpherePlacementRadius = 50.0f;
     private ComputeBuffer _fordSphereBuffer, _randomSphereBuffer;
-
+    //can be 0, 1, 2 to decide between large, medium or small sphere list
+    public int ListSize = 1;
     public Color myColor1, myColor2;
 
     private int SpheresTotal;
-    //Sphere Bob variable
-    private float step;
+    
     //Ford's Sphere tree depth
     public int depth;
 
@@ -62,7 +62,6 @@ public class RayTracing : MonoBehaviour
         public Vector3 albedo;
         public Vector3 specular;
     }
-
     private List<iPair> largeList = new List<iPair>()
     {
               new iPair( new ComplexNum(-1,0), new ComplexNum(0,1)),
@@ -1011,8 +1010,7 @@ public class RayTracing : MonoBehaviour
        new iPair(new ComplexNum(2,-1), new ComplexNum(2,2)),
        new iPair(new ComplexNum(2,1), new ComplexNum(2,2))
     };
-
-    private List<iPair> myComplexNum;
+    private List<List<iPair>> control;
 
     //SETUP DISPLAY
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -1038,8 +1036,7 @@ public class RayTracing : MonoBehaviour
         List<Sphere> fordCircles = new List<Sphere>();
         List<Sphere> randomSpheres = new List<Sphere>();
         List<Sphere> fordSpheres = new List<Sphere>();
-        List<Pair> fractionMap =  new List<Pair>();
-        myComplexNum = largeList;
+        control = new List<List<iPair>>() { largeList, mediumList, smallList };
 
         //drawRandomSpheres(randomSpheres);
         //setupFordCircles(fordSpheres, fractionMap);
@@ -1159,7 +1156,8 @@ public class RayTracing : MonoBehaviour
                 }
             }
         }*/
-        foreach (iPair coordiante in myComplexNum) 
+        List<iPair> temp = control[ListSize];
+        foreach (iPair coordiante in temp) 
         {
             //UnityEngine.Debug.Log("ComplexNum: \tAlpha " + coordiante.a + " | Beta "+coordiante.b+"\n\t\tCoordinate "+coordiante.a/coordiante.b+" | Mag "+ (coordiante.a/coordiante.b).mag());
             drawFordSpheres(coordiante.a, coordiante.b, spheres);
@@ -1197,7 +1195,7 @@ public class RayTracing : MonoBehaviour
 
         Color color = Color.Lerp(myColor1, myColor2, sphere.radius);
         sphere.albedo = new Vector3(color.r, color.g, color.b);
-        sphere.specular = new Vector3(0.8f,0.8f,0.8f);
+        sphere.specular = new Vector3(0f,0f,0f);
 
         spheres.Add(sphere);
 
@@ -1369,7 +1367,8 @@ public class RayTracing : MonoBehaviour
 
     private void SphereBob()
     {
-
+        //temp step imma get rid of it
+        float step=0;
         List<Sphere> spheres = new List<Sphere>();
 
         Sphere[] tempArray = new Sphere[SpheresTotal];
