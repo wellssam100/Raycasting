@@ -66,7 +66,7 @@
                 float d = length(p)-r;
                 //tarus
                 d =length(float2( length(p.xz) - r,p.y))-.2;
-
+                d =length(float2(cos(p.x)/cos(p.y), sin(p.x)/sin(p.y))) ;
                 return d;
             }
 

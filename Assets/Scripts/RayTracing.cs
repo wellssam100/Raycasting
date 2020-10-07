@@ -1010,7 +1010,33 @@ public class RayTracing : MonoBehaviour
        new iPair(new ComplexNum(2,-1), new ComplexNum(2,2)),
        new iPair(new ComplexNum(2,1), new ComplexNum(2,2))
     };
+    private List<iPair> eistensteinInts = new List<iPair>()
+    {
+        new iPair(new ComplexNum(-(1/2), -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(-1, 0), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(1/2, -(Mathf.Pow(3, 0.5f)/2)),new ComplexNum (-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(0,0),new ComplexNum (-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(1, 0), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2),new ComplexNum (-(1/2), Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(-(1/2), -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1, 0)),
+        new iPair(new ComplexNum(-1, 0), new ComplexNum(1, 0)),
+        new iPair(new ComplexNum(1/2, -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1, 0)),
+        new iPair(new ComplexNum(0, 0),new ComplexNum (1, 0)),
+        new iPair(new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2), new ComplexNum(1, 0)),
+        new iPair(new ComplexNum(1, 0), new ComplexNum(1, 0)),
+        new iPair(new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2),new ComplexNum (1, 0)),
+        new iPair(new ComplexNum(-(1/2), -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(-1, 0), new ComplexNum(1/2,Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(1/2, -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(0, 0), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
+        new iPair(new ComplexNum(1,0), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2))
+
+    };
     private List<List<iPair>> control;
+
+    public CameraControler myController;
 
     //SETUP DISPLAY
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -1031,16 +1057,18 @@ public class RayTracing : MonoBehaviour
             _fordSphereBuffer.Release();
     }
 
-    private void SetUpScene()
+    public void SetUpScene()
     {
+        float tempSpeed = myController.speed;
+        myController.speed = 0;
+
         List<Sphere> fordCircles = new List<Sphere>();
         List<Sphere> randomSpheres = new List<Sphere>();
         List<Sphere> fordSpheres = new List<Sphere>();
-        control = new List<List<iPair>>() { largeList, mediumList, smallList };
+        control = new List<List<iPair>>() { smallList, mediumList, largeList };
 
         //drawRandomSpheres(randomSpheres);
         //setupFordCircles(fordSpheres, fractionMap);
-
         setupFordSpheres(fordSpheres);
 
         //Assign Ford Spheres to compute buffer
@@ -1052,6 +1080,7 @@ public class RayTracing : MonoBehaviour
         _fordSphereBuffer.SetData(fordSpheres);
         SpheresTotal = fordSpheres.Count;
 
+        myController.speed = tempSpeed;
 
 
 
@@ -1156,11 +1185,22 @@ public class RayTracing : MonoBehaviour
                 }
             }
         }*/
-        List<iPair> temp = control[ListSize];
-        foreach (iPair coordiante in temp) 
+        if (ListSize < control.Count)
         {
-            //UnityEngine.Debug.Log("ComplexNum: \tAlpha " + coordiante.a + " | Beta "+coordiante.b+"\n\t\tCoordinate "+coordiante.a/coordiante.b+" | Mag "+ (coordiante.a/coordiante.b).mag());
-            drawFordSpheres(coordiante.a, coordiante.b, spheres);
+            List<iPair> temp = control[ListSize];
+            UnityEngine.Debug.Log("Loading spheres from list...\t" + ListSize);
+
+            foreach (iPair coordiante in temp)
+            {
+                //UnityEngine.Debug.Log("ComplexNum: \tAlpha " + coordiante.a + " | Beta "+coordiante.b+"\n\t\tCoordinate "+coordiante.a/coordiante.b+" | Mag "+ (coordiante.a/coordiante.b).mag());
+                drawFordSpheres(coordiante.a, coordiante.b, spheres);
+
+            }
+        }
+        else {
+            UnityEngine.Debug.Log("Ressetting List Count...");
+            ListSize = 0;
+            setupFordSpheres(spheres);
         }
        
 
@@ -1190,7 +1230,7 @@ public class RayTracing : MonoBehaviour
         Sphere sphere = new Sphere();
         ComplexNum coordinates = a / b; //Check / Funciton
         sphere.radius = 1.0f / (2.0f * b.mag()*b.mag());// Check the mag function
-        sphere.position = new Vector3(coordinates.r, sphere.radius, coordinates.i);
+        sphere.position = new Vector3(coordinates.r,  coordinates.i, sphere.radius);
 
 
         Color color = Color.Lerp(myColor1, myColor2, sphere.radius);
