@@ -285,6 +285,11 @@ PrefabInstance:
       propertyPath: myColor2.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3200015906480967443, guid: d21a9f91ab6ba8b41a68396fc983a81c,
+        type: 3}
+      propertyPath: ListSize
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3200015907673151760, guid: d21a9f91ab6ba8b41a68396fc983a81c,
         type: 3}
       propertyPath: target

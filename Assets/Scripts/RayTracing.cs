@@ -1012,27 +1012,102 @@ public class RayTracing : MonoBehaviour
     };
     private List<iPair> eistensteinInts = new List<iPair>()
     {
-        new iPair(new ComplexNum(-(1/2), -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(-1, 0), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(1/2, -(Mathf.Pow(3, 0.5f)/2)),new ComplexNum (-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(0,0),new ComplexNum (-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(1, 0), new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2),new ComplexNum (-(1/2), Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(-(1/2), -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1, 0)),
-        new iPair(new ComplexNum(-1, 0), new ComplexNum(1, 0)),
-        new iPair(new ComplexNum(1/2, -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1, 0)),
-        new iPair(new ComplexNum(0, 0),new ComplexNum (1, 0)),
-        new iPair(new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2), new ComplexNum(1, 0)),
-        new iPair(new ComplexNum(1, 0), new ComplexNum(1, 0)),
-        new iPair(new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2),new ComplexNum (1, 0)),
-        new iPair(new ComplexNum(-(1/2), -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(-1, 0), new ComplexNum(1/2,Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(1/2, -(Mathf.Pow(3, 0.5f)/2)), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(0, 0), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(-(1/2), Mathf.Pow(3, 0.5f)/2), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2)),
-        new iPair(new ComplexNum(1,0), new ComplexNum(1/2, Mathf.Pow(3, 0.5f)/2))
-
+       new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(-1.0f, 0.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(0.0f, 0.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(1.0f, 0.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(-1.0f, 0.0f), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(0.0f, 0.0f), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(-(1.0f/2.0f),Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(1.0f, 0.0f), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f, 0.0f)),
+       new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(-1.0f, 0.0f), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(0.0f, 0.0f), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+       new iPair( new ComplexNum(1.0f, 0.0f), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f))
+    };
+    private List<iPair> eistensteinInts2 = new List<iPair>() 
+    {
+      new iPair(new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(0, 0), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(3.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(0, -Mathf.Sqrt(3.0f)), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(3.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/ 2.0f), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(3.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(0, Mathf.Sqrt(3.0f)), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(-1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, 0)),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(1.0f, 0)),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, 0)),
+        new iPair( new ComplexNum(0, 0), new ComplexNum(1.0f, 0)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f, 0)),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(1.0f, 0)),
+        new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f,0)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(1.0f/2.0f,Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(0, 0), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f,0), new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(3.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(0, 0), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(3.0f/ 2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(0, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(3.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(0, -Mathf.Sqrt(3.0f)), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(-(3.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(3.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(2.0f,0)),
+        new iPair( new ComplexNum(0, Mathf.Sqrt(3.0f)), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(2.0f, 0)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(3.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(0, 0), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(3.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/ 2.0f)),
+        new iPair( new ComplexNum(1.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f)),
+        new iPair( new ComplexNum(-(3.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(0, -Mathf.Sqrt(3.0f)), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(1.0f/2.0f), -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-1.0f, 0), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(3.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(-(1.0f/2.0f), Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(3.0f/2.0f, -(Mathf.Sqrt(3.0f)/2.0f)), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(1.0f, 0), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(0, Mathf.Sqrt(3.0f)), new ComplexNum(1.0f, Mathf.Sqrt(3.0f))),
+        new iPair( new ComplexNum(3.0f/2.0f, Mathf.Sqrt(3.0f)/2.0f), new ComplexNum(1.0f, Mathf.Sqrt(3.0f)))
     };
     private List<List<iPair>> control;
 
@@ -1065,7 +1140,7 @@ public class RayTracing : MonoBehaviour
         List<Sphere> fordCircles = new List<Sphere>();
         List<Sphere> randomSpheres = new List<Sphere>();
         List<Sphere> fordSpheres = new List<Sphere>();
-        control = new List<List<iPair>>() { smallList, mediumList, largeList };
+        control = new List<List<iPair>>() { smallList, mediumList, largeList, eistensteinInts, eistensteinInts2 };
 
         //drawRandomSpheres(randomSpheres);
         //setupFordCircles(fordSpheres, fractionMap);
@@ -1235,7 +1310,7 @@ public class RayTracing : MonoBehaviour
 
         Color color = Color.Lerp(myColor1, myColor2, sphere.radius);
         sphere.albedo = new Vector3(color.r, color.g, color.b);
-        sphere.specular = new Vector3(0f,0f,0f);
+        sphere.specular = new Vector3(0.7f,0.7f,0.7f);
 
         spheres.Add(sphere);
 

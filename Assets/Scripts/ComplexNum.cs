@@ -56,8 +56,8 @@ public class ComplexNum
     }
 
     public static ComplexNum operator /(ComplexNum a, ComplexNum b) {
-        float real = ((a.r * b.r) + (a.i * b.i)) / ((float)Math.Pow(b.r, 2) + (float)Math.Pow(b.i, 2));
-        float imag = ((a.i * b.r) - (a.r * b.i)) / ((float)Math.Pow(b.r, 2) + (float)Math.Pow(b.i, 2));
+        float real = ((a.r * b.r) + (a.i * b.i)) / (Mathf.Pow(b.r, 2) + Mathf.Pow(b.i, 2));
+        float imag = ((a.i * b.r) - (a.r * b.i)) / (Mathf.Pow(b.r, 2) + Mathf.Pow(b.i, 2));
         return new ComplexNum(real, imag);
     }
     public static ComplexNum operator +(ComplexNum a, ComplexNum b) {

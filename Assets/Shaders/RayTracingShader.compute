@@ -168,7 +168,7 @@ float3 Shade(inout Ray ray, RayHit hit)
         if (shadowHit.distance != 1.#INF)
         {
             //TURN OFF/ON SHADOWS
-          //  return float3(0.0f, 0.0f, 0.0f);
+            return float3(0.0f, 0.0f, 0.0f);
         }
 
         //this is the diffuse return

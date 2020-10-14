@@ -46,8 +46,8 @@ public class CameraControler : MonoBehaviour
        // transform.position = Vector3.Lerp(currentPos, nextPos, speed/Time.deltaTime);
        if(speed>0)
        transform.RotateAround(transform.position, -Vector3.up, .5f*speed);
+        
 
-       
     }
     void RefreshList() 
     {
