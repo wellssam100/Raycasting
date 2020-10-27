@@ -96,7 +96,7 @@ void IntersectGroundPlane(Ray ray, inout RayHit bestHit)
         bestHit.distance = t; 
         bestHit.position = ray.origin + t * ray.direction;
         bestHit.normal = float3(0.0f, 1.0f, 0.0f);
-        bestHit.specular = float3(0.6f, 0.6f, 0.6f);
+        bestHit.specular = float3(0.1f, 0.1f, 0.1f);// float3(0.6f, 0.6f, 0.6f);
         bestHit.albedo = float3(0.6f, 0.6f, 0.6f);
     }
 }
@@ -129,7 +129,7 @@ RayHit Trace(Ray ray)
 {
     RayHit bestHit = CreateRayHit();
     //TODO add plane toggle
-   // IntersectGroundPlane(ray, bestHit);
+    //IntersectGroundPlane(ray, bestHit);
     
 
     //Trace Spheres
@@ -156,7 +156,7 @@ float3 Shade(inout Ray ray, RayHit hit)
         //float3 specular = float3(0.6f, 0.65f, 0.6f);
         //float3 albedo = float3(0.8f, 0.8f, 0.8f);
 
-        //Reflect the ray adn multiply energy with specular relfection
+        //Reflect the ray and   multiply energy with specular relfection
         ray.origin = hit.position + hit.normal * 0.001f;
         ray.direction = reflect(ray.direction, hit.normal);
         ray.energy *= hit.specular;
@@ -172,6 +172,7 @@ float3 Shade(inout Ray ray, RayHit hit)
         }
 
         //this is the diffuse return
+        //return float3(0.0f, 0.0f, 0.0f);
         return saturate(dot(hit.normal, _DirectionalLight.xyz) * -1) * _DirectionalLight.w * hit.albedo;
     }
     else 

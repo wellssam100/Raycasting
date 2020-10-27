@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        transform.position = new Vector3(.5f, .1f, -1.0f);
+        transform.rotation.Set(180f, 180f, 180f,1);
     }
 
     // Update is called once per frame
